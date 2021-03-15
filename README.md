@@ -1,16 +1,3 @@
-# Pruebas de código MarketGoo
-
-¡Gracias por interesarte por nosotros! Como parte del proceso de selección, hemos creado unas pequeñas pruebas de código que te permitirán expresar mejor de lo que eres capaz, ¡sorprendenos! :-)
-
-Estas pruebas NO están pensadas como una especie de examen o filtro de aptitud, ¡para nada! No queremos que te sientas limitado o cohibido si alguna de las tecnologías de las pruebas no son lo tuyo, simplemente rellena o termina hasta donde puedas según las instrucciones teniendo en cuenta los siguientes puntos:
-
-- NO miramos el estilo del código. Utiliza tu propio estilo con el que estés acostumbrado.
-- NO hace falta que la prueba esté completamente realizada. Simplemente envianos lo que tengas.
-- Si algún punto no lo terminas correctamente, o la prueba no hace exactamente lo que pedimos, añade comentarios para que podamos seguir el razonamiento.
-
-Como verás por estos puntos, lo importante es cómo te enfrentas a las pruebas más que el resultado final. Cualquier cosa que nos quieras transmitir añádelas como parte de comentarios en el código.
-
-
 # Prueba de PHP: Ampliar un servidor GraphQL
 
 Tenemos un API GraphQL que nos devuelve los usuarios que tenemos en la BBDD pero se nos ha olvidado adjuntar la región donde viven estos usuarios mediante la IP que tenemos almacenada.
