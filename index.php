@@ -4,6 +4,9 @@
  */
 require __DIR__."/vendor/autoload.php";
 
+use GraphQL\Error\Debug;
+use GraphQL\Error\FormattedError;
+use GraphQL\Server\StandardServer;
 use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Http\Message\ResponseInterface as Response;
 use GraphQL\Type\Definition\ObjectType;
@@ -30,11 +33,12 @@ $graphql_user_type = new ObjectType([
 // Instanciamos la aplicación Slim. Es tan sencilla que sólo vamos a usar aquí
 // la ruta "/graphql" para este test. Todo lo demás es por defecto.
 $app = new Slim\App();
+
 $app->map(["GET", "POST"], "/graphql", function(Request $request, Response $response) {
     global $users, $graphql_user_type;
-    $debug = \GraphQL\Error\Debug::INCLUDE_DEBUG_MESSAGE | \GraphQL\Error\Debug::INCLUDE_TRACE;
+    $debug = Debug::INCLUDE_DEBUG_MESSAGE | Debug::INCLUDE_TRACE;
     try {
-        $graphQLServer = new \GraphQL\Server\StandardServer([
+        $graphQLServer = new StandardServer([
             "schema" => new Schema([
                 "query" => new ObjectType([
                     "name" => "Query",
@@ -45,9 +49,7 @@ $app->map(["GET", "POST"], "/graphql", function(Request $request, Response $resp
                                 "id" => Type::nonNull(Type::int())
                             ],
                             "resolve" => function ($rootValue, $args) use ($users) {
-                                return isset($users[intval($args["id"])])
-                                    ? $users[intval($args["id"])]
-                                    : null;
+                                return $users[intval($args["id"])] ?? null;
                             }
                         ],
                         "users" => [
@@ -63,9 +65,9 @@ $app->map(["GET", "POST"], "/graphql", function(Request $request, Response $resp
         ]);
 
         return $graphQLServer->processPsrRequest($request, $response, $response->getBody());
-    } catch (\Exception $e) {
+    } catch (Exception $e) {
         return $response->withStatus($e->getCode() ?? 500)->withJson([
-            "errors" => [\GraphQL\Error\FormattedError::createFromException($e, $debug)]
+            "errors" => [FormattedError::createFromException($e, $debug)]
         ]);
     }
 });
