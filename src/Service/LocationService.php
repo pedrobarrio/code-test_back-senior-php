@@ -10,7 +10,7 @@ class LocationService
         if (empty($ip) || !$key) {
             return json_encode([]);
         }
-        $baseUrl = "http://api.ipstack.com/"; // free enroll. free use. https://ipwhois.io/documentation can be use instead
+        $baseUrl = "https://api.ipstack.com/"; // free enroll. free use. https://ipwhois.io/documentation can be use instead
         //https://rapidapi.com/whoisapi/api/ip-geolocation/ => free and low latency
         $fullUrl = $baseUrl . rawurlencode($ip) . "?access_key=" . rawurlencode($key);
         $ch = curl_init();
