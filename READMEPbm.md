@@ -9,6 +9,10 @@ En este caso, hay dos alternativas dado que al ser gratuítas ofrecían limitaci
 
 Se han hecho test Funcionales para comprobar que se devuelven los datos que se pedían. 
 
+## Configuración
+
+La integración de geolocalización usa `RAPIDAPI_KEY`. La alternativa usa `IPSTACK_ACCESS_KEY`. Sin la clave correspondiente se devuelve el valor de reserva `[]` como cadena.
+
 ## ** ToDo **
 
 Comprobar que el input de los datos sigue siempre el mismo formato. 

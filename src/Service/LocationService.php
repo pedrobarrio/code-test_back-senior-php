@@ -6,12 +6,13 @@ class LocationService
 {
     public static function getIpRegionByIp(string $ip): string
     {
-        if (empty($ip)) {
+        $key = getenv('IPSTACK_ACCESS_KEY');
+        if (empty($ip) || !$key) {
             return json_encode([]);
         }
         $baseUrl = "http://api.ipstack.com/"; // free enroll. free use. https://ipwhois.io/documentation can be use instead
         //https://rapidapi.com/whoisapi/api/ip-geolocation/ => free and low latency
-        $fullUrl = sprintf($baseUrl . "%s?access_key=23dc9996807fa1f7d61a2b5acf791a23", $ip);
+        $fullUrl = $baseUrl . rawurlencode($ip) . "?access_key=" . rawurlencode($key);
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $fullUrl);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -24,7 +25,8 @@ class LocationService
 
     public static function getIpRegionByIpv2(string $ip): string
     {
-        if (empty($ip)) {
+        $key = getenv('RAPIDAPI_KEY');
+        if (empty($ip) || !$key) {
             return json_encode([]);
         }
         $curl = curl_init();
@@ -40,7 +42,7 @@ class LocationService
             CURLOPT_CUSTOMREQUEST => "GET",
             CURLOPT_HTTPHEADER => [
                 "X-RapidAPI-Host: whoisapi-ip-geolocation-v1.p.rapidapi.com",
-                "X-RapidAPI-Key: 17ab314858msh65ba0515ae42b54p1e0575jsn5db14d86bf43"
+                "X-RapidAPI-Key: " . $key
             ],
         ]);
 
