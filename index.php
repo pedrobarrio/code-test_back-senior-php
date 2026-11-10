@@ -5,7 +5,7 @@
 require __DIR__ . "/vendor/autoload.php";
 
 use App\Service\LocationService;
-use GraphQL\Error\Debug;
+use GraphQL\Error\DebugFlag;
 use GraphQL\Error\FormattedError;
 use GraphQL\Server\StandardServer;
 use Psr\Http\Message\ServerRequestInterface as Request;
@@ -34,11 +34,14 @@ $graphql_user_type = new ObjectType([
 
 // Instanciamos la aplicación Slim. Es tan sencilla que sólo vamos a usar aquí
 // la ruta "/graphql" para este test. Todo lo demás es por defecto.
-$app = new Slim\App();
+$app = Slim\Factory\AppFactory::create();
+
+$app->addBodyParsingMiddleware();
+$app->addErrorMiddleware(false, true, true);
 
 $app->map(["GET", "POST"], "/graphql", function (Request $request, Response $response) {
     global $users, $graphql_user_type;
-    $debug = Debug::INCLUDE_DEBUG_MESSAGE | Debug::INCLUDE_TRACE;
+    $debug = DebugFlag::INCLUDE_DEBUG_MESSAGE | DebugFlag::INCLUDE_TRACE;
     try {
         $graphQLServer = new StandardServer([
             "schema" => new Schema([
@@ -71,14 +74,17 @@ $app->map(["GET", "POST"], "/graphql", function (Request $request, Response $res
                     ]
                 ])
             ]),
-            "debug" => $debug
+            "debugFlag" => $debug
         ]);
 
         return $graphQLServer->processPsrRequest($request, $response, $response->getBody());
     } catch (Exception $e) {
-        return $response->withStatus($e->getCode() ?? 500)->withJson([
+        $status = (int) $e->getCode();
+        $response->getBody()->write(json_encode([
             "errors" => [FormattedError::createFromException($e, $debug)]
-        ]);
+        ], JSON_THROW_ON_ERROR));
+        return $response->withStatus($status >= 400 && $status <= 599 ? $status : 500)
+            ->withHeader('Content-Type', 'application/json');
     }
 });
 

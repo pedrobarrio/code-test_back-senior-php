@@ -56,8 +56,8 @@ final class UserInfoTest extends TestCase
             'body' => $graphQLquery
         ]);
         $this->assertEquals(
-            '{"data":{"user":{"name":null,"id":null,"ip_region":"[]"}}}',
-            $response->getBody()->getContents()
+            ['data' => ['user' => ['name' => null, 'id' => null, 'ip_region' => '[]']]],
+            json_decode($response->getBody()->getContents(), true, 512, JSON_THROW_ON_ERROR)
         );
     }
 }
